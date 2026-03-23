@@ -13,7 +13,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -170,6 +172,47 @@ async function logoutUser() {
   await signOut(auth);
 }
 
+// ── GOOGLE SIGN-IN ──────────────────────────
+
+async function loginWithGoogle(askUsername) {
+  const provider = new GoogleAuthProvider();
+  const userCred = await signInWithPopup(auth, provider);
+  const uid      = userCred.user.uid;
+
+  const snap = await getDoc(doc(db, "users", uid));
+  if (snap.exists()) {
+    const data = snap.data();
+    if (data.banned) throw new Error("Акаунт заблокований!");
+    return { uid, ...data };
+  }
+
+  // Новий юзер — питаємо нікнейм
+  const username = await askUsername();
+  if (!username) throw new Error("Нікнейм обов'язковий!");
+
+  const usernameDoc = await getDoc(doc(db, "usernames", username));
+  if (usernameDoc.exists()) throw new Error("Цей нікнейм вже зайнятий!");
+
+  const newUser = {
+    username,
+    email:     userCred.user.email || "",
+    balance:   100,
+    inventory: [],
+    level:     1,
+    xp:        0,
+    friends:   [],
+    clan:      null,
+    banned:    false,
+    createdAt: Date.now(),
+    lastSeen:  Date.now(),
+  };
+
+  await setDoc(doc(db, "users", uid), newUser);
+  await setDoc(doc(db, "usernames", username), { uid });
+
+  return { uid, ...newUser };
+}
+
 // ── СПИСОК ГРАВЦІВ ──────────────────────────
 
 async function getAllUsernames() {
@@ -179,7 +222,7 @@ async function getAllUsernames() {
 
 export {
   db, auth,
-  registerUser, loginUser, saveUserData, logoutUser,
+  registerUser, loginUser, loginWithGoogle, saveUserData, logoutUser,
   listItemOnMarket, getMarketListings, removeMarketListing, buyMarketItem,
   sendTradeRequest, getMyTrades, updateTradeStatus,
   getAllUsernames,
