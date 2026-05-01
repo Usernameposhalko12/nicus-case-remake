@@ -5916,14 +5916,22 @@ if (diff < 0) diff += Math.PI * 2;
 // Якщо diff дуже малий — додаємо повний оберт щоб не зупинявся "одразу"
 if (diff < 0.3) diff += Math.PI * 2;
 
-const minSpins = 5 + power * 5; // мінімум 5, максимум 10
+// Фіксована кількість обертів (не залежить від сили)
+const minSpins = 6;
+// Гарантуємо що diff >= пів-оберту щоб колесо точно "пройшло" призову позицію
+if (diff < Math.PI) diff += Math.PI * 2;
 const totalRot = minSpins * Math.PI * 2 + diff;
+
+// Швидкість спіну (тривалість) залежить від сили
+const duration = 3000 + power * 4000; // слабка=3с, макс=7с
 
   // 3. Анімація одразу до призу
 
-  const duration = 5000 + power * 2000;
-  const startTime = performance.now();
-  const startRot  = _mellSpring.rotation;
+const minSpins = 6;
+if (diff < Math.PI) diff += Math.PI * 2;
+const totalRot = minSpins * Math.PI * 2 + diff;
+const duration = 3000 + power * 4000;
+
 
   function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
 
