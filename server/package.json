@@ -1,0 +1,13 @@
+{
+  "name": "market-bots-tick",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Серверний тік ринкових ботів для Нікус Кейс Ремейк — запускається за розкладом (GitHub Actions), незалежно від того, чи хтось онлайн у грі.",
+  "main": "market-bots-tick.js",
+  "scripts": {
+    "tick": "node market-bots-tick.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.6.0"
+  }
+}
