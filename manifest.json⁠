@@ -1,0 +1,21 @@
+{
+  "name": "Екосистема Нікус",
+  "short_name": "Нікус Еко",
+  "description": "Єдиний хаб міні-додатків від Нікус Production",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e8f4f8",
+  "theme_color": "#0ab4cc",
+  "icons": [
+    {
+      "src": "img/nikus-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/nikus-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
